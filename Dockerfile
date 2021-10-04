@@ -7,6 +7,11 @@ WORKDIR /app
 RUN apt update
 RUN apt install dnsutils --yes
 
+# RUN apt-get update && apt-get install -y cron
+# COPY example-crontab /etc/cron.d/example-crontab
+# RUN chmod 0644 /etc/cron.d/example-crontab &&\
+#     crontab /etc/cron.d/example-crontab
+
 COPY docker_run ./
 
 ENV REDIS_PORT ${REDIS_PORT:-6379}

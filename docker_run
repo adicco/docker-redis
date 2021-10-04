@@ -1,0 +1,33 @@
+#!/bin/bash
+
+replace_env() {
+	# while read line; 
+	# do 
+	# 	# List our env variables and split them with =
+	# 	parsed="$(cut -d'=' -f2 <<<"$line")"
+	# 	curvar="$(echo $parsed | sed 's|\$||g')"
+	# 	eval actualval=\$$curvar
+
+	# 	echo "$parsed -> $actualval"
+		
+	# 	sed -i "s|$parsed|$actualval|g" $1 
+
+	# done < ./.env.schema
+	while IFS='=' read -r -d '' n v; do
+			sed -i "s|"'$'"$n|$v|g" $1 
+			# printf "'%s'='%s'\n" "$n" "$v"
+	done < <(env -0)
+}
+
+replace_env /usr/local/etc/redis/redis.conf
+
+if [ "$REDIS_REPLICA_MODE" == "replica" ]; then
+	replace_env /usr/local/etc/redis/redis.replica.conf
+	cat /usr/local/etc/redis/redis.replica.conf >> /usr/local/etc/redis/redis.conf
+	public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com -4)
+	echo $public_ip
+	echo "replica-announce-ip $public_ip" >> /usr/local/etc/redis/redis.conf
+	echo "replica-announce-port $REDIS_PUBLISHED_PORT" >> /usr/local/etc/redis/redis.conf
+fi
+
+redis-server /usr/local/etc/redis/redis.conf

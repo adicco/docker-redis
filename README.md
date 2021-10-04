@@ -10,7 +10,7 @@ Set the environment variable `REDIS_REPLICA_MODE` to `replica` if you want to sp
 
 ### Environment
 
-	| Varable | Description | Mandatory |
+| Varable | Description | Mandatory |
 | ----------- | ----------- | ---------- |
 | REDIS_PASSWORD | Password to the redis instance | Yes
 | REDIS_REPLICA_MODE | master/replica | No, `master` is default

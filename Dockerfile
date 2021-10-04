@@ -9,4 +9,8 @@ RUN apt install dnsutils --yes
 
 COPY docker_run ./
 
+ENV REDIS_PORT ${REDIS_PORT:-6379}
+
+EXPOSE $REDIS_PORT
+
 CMD [ "/app/docker_run" ]

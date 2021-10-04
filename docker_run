@@ -24,10 +24,14 @@ replace_env /usr/local/etc/redis/redis.conf
 if [ "$REDIS_REPLICA_MODE" == "replica" ]; then
 	replace_env /usr/local/etc/redis/redis.replica.conf
 	cat /usr/local/etc/redis/redis.replica.conf >> /usr/local/etc/redis/redis.conf
+
+
+	# if REPLICA_IS_DYNAMIC true then
 	public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com -4)
+	# else use $REPLICA_PUBLIC_IP
 	echo $public_ip
 	echo "replica-announce-ip $public_ip" >> /usr/local/etc/redis/redis.conf
-	echo "replica-announce-port $REDIS_PUBLISHED_PORT" >> /usr/local/etc/redis/redis.conf
+	echo "replica-announce-port ${REDIS_PUBLISHED_PORT:-6379}" >> /usr/local/etc/redis/redis.conf
 fi
 
 redis-server /usr/local/etc/redis/redis.conf
